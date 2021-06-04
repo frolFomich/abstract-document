@@ -29,6 +29,9 @@ type Document interface {
 	IsNull(key string) (bool, error)
 	IsExist(key string) bool
 
+	Size() int
+	Keys() []string
+
 	JsonSerializable
 }
 

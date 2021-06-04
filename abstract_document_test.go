@@ -420,3 +420,66 @@ func TestAbstractDocument_Remove(t *testing.T) {
 		})
 	}
 }
+
+func TestAbstractDocument_Size(t *testing.T) {
+	type fields struct {
+		data map[string]interface{}
+	}
+	type args struct {
+		key string
+	}
+
+	givenMap := map[string]interface{}{"A":"B", "C":false, "E" : 3}
+
+	tests := []struct {
+		name   string
+		fields fields
+		want   int
+	}{
+		{name: "Size returns correct value", fields: fields{data: givenMap},  want: 3},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			a := &AbstractDocument{
+				data: tt.fields.data,
+			}
+			if got := a.Size(); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Remove() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestAbstractDocument_Keys(t *testing.T) {
+	type fields struct {
+		data map[string]interface{}
+	}
+	type args struct {
+		key string
+	}
+
+	givenKeys := []string{"A", "B", "C"}
+	givenMap := make(map[string]interface{}, len(givenKeys))
+	for i,k := range givenKeys {
+		givenMap[k] = i+1
+	}
+
+	tests := []struct {
+		name   string
+		fields fields
+		want   []string
+		wantErr bool
+	}{
+		{name: "Remove returns correct value", fields: fields{data: givenMap}, want: givenKeys, wantErr: false},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			a := &AbstractDocument{
+				data: tt.fields.data,
+			}
+			if got := a.Keys(); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Keys() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}

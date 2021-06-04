@@ -176,6 +176,20 @@ func (a *AbstractDocument) IsExist(key string) bool {
 	return ok
 }
 
+func (a *AbstractDocument) Size() int {
+	return len(a.data)
+}
+
+func (a *AbstractDocument) Keys() []string {
+	res := make([]string, a.Size())
+	i := 0
+	for k,_ := range a.data {
+		res[i] = k
+		i++
+	}
+	return res
+}
+
 func asGoType(value interface{}) interface{} {
 	if value == nil {
 		return nil
