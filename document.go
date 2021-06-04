@@ -3,11 +3,6 @@ package abstract_document
 type ConstructorFunc func (map[string]interface{}) Document
 
 type Array []interface{}
-type Boolean bool
-type String string
-type Integer int64
-type Number float64
-type Null struct{}
 
 // Document interface describes document behaviour
 type Document interface {
@@ -21,10 +16,10 @@ type Document interface {
 
 	AsPlainMap() map[string]interface{}
 
-	Boolean(key string) (Boolean, error)
-	String(key string) (String, error)
-	Integer(key string) (Integer, error)
-	Number(key string) (Number, error)
+	Boolean(key string) (bool, error)
+	String(key string) (string, error)
+	Integer(key string) (int64, error)
+	Number(key string) (float64, error)
 
 	IsNull(key string) (bool, error)
 	IsExist(key string) bool

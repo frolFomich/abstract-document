@@ -14,6 +14,8 @@ var (
 	ErrorKeyDoesNotExist = errors.New("key doesn't exists")
 	ErrorInvalidKey = errors.New("invalid key provided")
 	ErrorDataConversion = errors.New("invalid data conversion")
+
+	ErrorUnsupportedGoType = errors.New("unsupported go data type")
 )
 
 func (a *AbstractDocument) Get(key string) interface{} {
@@ -75,7 +77,7 @@ func (a *AbstractDocument) Document(key string) Document {
 	return empty
 }
 
-func (a *AbstractDocument) Boolean(key string) (Boolean, error) {
+func (a *AbstractDocument) Boolean(key string) (bool, error) {
 	if key == "" {
 		return false, ErrorInvalidKey
 	}
@@ -84,12 +86,12 @@ func (a *AbstractDocument) Boolean(key string) (Boolean, error) {
 		return false, ErrorKeyDoesNotExist
 	}
 	if b, ok := i.(bool); ok {
-		return Boolean(b), nil
+		return b, nil
 	}
 	return false, ErrorDataConversion
 }
 
-func (a *AbstractDocument) String(key string) (String, error) {
+func (a *AbstractDocument) String(key string) (string, error) {
 	if key == "" {
 		return "", ErrorInvalidKey
 	}
@@ -98,12 +100,12 @@ func (a *AbstractDocument) String(key string) (String, error) {
 		return "", ErrorKeyDoesNotExist
 	}
 	if b, ok := i.(string); ok {
-		return String(b), nil
+		return b, nil
 	}
 	return "", ErrorDataConversion
 }
 
-func (a *AbstractDocument) Integer(key string) (Integer, error) {
+func (a *AbstractDocument) Integer(key string) (int64, error) {
 	if key == "" {
 		return 0, ErrorInvalidKey
 	}
@@ -115,12 +117,12 @@ func (a *AbstractDocument) Integer(key string) (Integer, error) {
 		if _, r := math.Modf(b); r != 0 {
 			return 0, ErrorDataConversion
 		}
-		return Integer(b), nil
+		return int64(b), nil
 	}
 	return 0, ErrorDataConversion
 }
 
-func (a *AbstractDocument) Number(key string) (Number, error) {
+func (a *AbstractDocument) Number(key string) (float64, error) {
 	if key == "" {
 		return 0, ErrorInvalidKey
 	}
@@ -129,7 +131,7 @@ func (a *AbstractDocument) Number(key string) (Number, error) {
 		return 0, ErrorKeyDoesNotExist
 	}
 	if b, ok := i.(float64); ok {
-		return Number(b), nil
+		return b, nil
 	}
 	return 0, ErrorDataConversion
 }
@@ -183,7 +185,7 @@ func (a *AbstractDocument) Size() int {
 func (a *AbstractDocument) Keys() []string {
 	res := make([]string, a.Size())
 	i := 0
-	for k,_ := range a.data {
+	for k := range a.data {
 		res[i] = k
 		i++
 	}
@@ -193,16 +195,6 @@ func (a *AbstractDocument) Keys() []string {
 func asGoType(value interface{}) interface{} {
 	if value == nil {
 		return nil
-	} else if b, tb := value.(Boolean); tb {
-		return bool(b)
-	} else if s, ts := value.(String); ts {
-		return string(s)
-	} else if i, ti := value.(Integer); ti {
-		return float64(i)
-	} else if n, tn := value.(Number); tn {
-		return float64(n)
-	} else if _, tu := value.(Null); tu {
-		return struct{}{}
 	} else if d, td := value.(Document); td {
 		return d.AsPlainMap()
 	} else if a, ta := value.(Array); ta {
@@ -244,9 +236,9 @@ func asGoType(value interface{}) interface{} {
 	} else if v, tv := value.(rune); tv {
 		return string(v)
 	} else if _, tv := value.(complex64); tv {
-		panic(errors.New("unsupported go type"))
+		panic(ErrorUnsupportedGoType)
 	} else if _, tv := value.(complex128); tv {
-		panic(errors.New("unsupported go type"))
+		panic(ErrorUnsupportedGoType)
 	}
 
 	return value

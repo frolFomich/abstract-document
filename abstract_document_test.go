@@ -16,7 +16,7 @@ func TestAbstractDocument_Boolean(t *testing.T) {
 		name    string
 		fields  fields
 		args    args
-		want    Boolean
+		want    bool
 		wantErr bool
 	}{
 		{name: "Boolean return correct value", fields: fields{ data: map[string]interface{} {"A": true}}, args: args{key: "A"}, want: true, wantErr: false},
@@ -52,7 +52,7 @@ func TestAbstractDocument_String(t *testing.T) {
 		name    string
 		fields  fields
 		args    args
-		want    String
+		want    string
 		wantErr bool
 	}{
 		{name: "String return correct value", fields: fields{ data: map[string]interface{} {"A": "B"}}, args: args{key: "A"}, want: "B", wantErr: false},
@@ -133,11 +133,11 @@ func TestAbstractDocument_Number(t *testing.T) {
 		name    string
 		fields  fields
 		args    args
-		want    Number
+		want    float64
 		wantErr bool
 	}{
-		{name: "Number return correct value for float", fields: fields{ data: map[string]interface{} {"A": 10.25}}, args: args{key: "A"}, want: Number(10.25), wantErr: false},
-		{name: "Number return correct value for int", fields: fields{ data: map[string]interface{} {"A": float64(10)}}, args: args{key: "A"}, want: Number(10), wantErr: false},
+		{name: "Number return correct value for float", fields: fields{ data: map[string]interface{} {"A": 10.25}}, args: args{key: "A"}, want: 10.25, wantErr: false},
+		{name: "Number return correct value for int", fields: fields{ data: map[string]interface{} {"A": float64(10)}}, args: args{key: "A"}, want: 10, wantErr: false},
 		{name: "Number return conversion error", fields: fields{ data: map[string]interface{} {"A": 123}}, args: args{key: "A"}, want: 0, wantErr: true},
 		{name: "Number return key not exist error", fields: fields{ data: map[string]interface{} {"B": 1}}, args: args{key: "A"}, want: 0, wantErr: true},
 		{name: "Number return invalid key error", fields: fields{ data: map[string]interface{} {"A": 1}}, args: args{key: ""}, want: 0, wantErr: true},
@@ -170,10 +170,10 @@ func TestAbstractDocument_Integer(t *testing.T) {
 		name    string
 		fields  fields
 		args    args
-		want    Integer
+		want    int64
 		wantErr bool
 	}{
-		{name: "Number return correct value for float", fields: fields{ data: map[string]interface{} {"A": float64(10)}}, args: args{key: "A"}, want: Integer(10), wantErr: false},
+		{name: "Number return correct value for float", fields: fields{ data: map[string]interface{} {"A": float64(10)}}, args: args{key: "A"}, want: 10, wantErr: false},
 		{name: "Number return conversion error", fields: fields{ data: map[string]interface{} {"A": 123.25}}, args: args{key: "A"}, want: 0, wantErr: true},
 		{name: "Number return key not exist error", fields: fields{ data: map[string]interface{} {"B": 1}}, args: args{key: "A"}, want: 0, wantErr: true},
 		{name: "Number return invalid key error", fields: fields{ data: map[string]interface{} {"A": 1}}, args: args{key: ""}, want: 0, wantErr: true},
@@ -328,7 +328,7 @@ func TestAbstractDocument_Put(t *testing.T) {
 	}
 
 	givenGoTypesMap := map[string]interface{}{"A": "B", "C": 100.25, "D": false, "F": nil}
-	givenDocTypesMap := map[string]interface{}{"A": String("B"), "C": Number(100.25), "D": Boolean(false), "F": Document(nil)}
+	givenDocTypesMap := map[string]interface{}{"A": "B", "C": 100.25, "D": false, "F": Document(nil)}
 
 	tests := []struct {
 		name    string
@@ -425,10 +425,6 @@ func TestAbstractDocument_Size(t *testing.T) {
 	type fields struct {
 		data map[string]interface{}
 	}
-	type args struct {
-		key string
-	}
-
 	givenMap := map[string]interface{}{"A":"B", "C":false, "E" : 3}
 
 	tests := []struct {
@@ -454,10 +450,6 @@ func TestAbstractDocument_Keys(t *testing.T) {
 	type fields struct {
 		data map[string]interface{}
 	}
-	type args struct {
-		key string
-	}
-
 	givenKeys := []string{"A", "B", "C"}
 	givenMap := make(map[string]interface{}, len(givenKeys))
 	for i,k := range givenKeys {

@@ -31,7 +31,7 @@ func FromOther(doc Document) Document {
 	return Of(dst)
 }
 
-func FromJson(bytes []byte) (Document, error) {
+func UnmarshalJson(bytes []byte) (Document, error) {
 	if bytes == nil || len(bytes) <= 0 {
 		return nil, ErrorInvalidJsonBytes
 	}

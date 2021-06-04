@@ -16,9 +16,9 @@ func TestFromJson(t *testing.T) {
 		"C" : true
 	}`)
 
-	givenDoc, err := FromJson(givenJson)
+	givenDoc, err := UnmarshalJson(givenJson)
 	if err != nil {
-		t.Errorf("FromJson() error = %v", err)
+		t.Errorf("UnmarshalJson() error = %v", err)
 		return
 	}
 
@@ -33,13 +33,13 @@ func TestFromJson(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := FromJson(tt.args.bytes)
+			got, err := UnmarshalJson(tt.args.bytes)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("FromJson() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("UnmarshalJson() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("FromJson() got = %v, want %v", got, tt.want)
+				t.Errorf("UnmarshalJson() got = %v, want %v", got, tt.want)
 			}
 		})
 	}
