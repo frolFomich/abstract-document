@@ -1,4 +1,4 @@
-package document
+package abstract_document
 
 import (
 	"reflect"

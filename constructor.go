@@ -1,4 +1,4 @@
-package document
+package abstract_document
 
 import (
 	"encoding/json"
@@ -23,7 +23,7 @@ func FromOther(doc Document) Document {
 	if doc == nil {
 		return New()
 	}
-	src := doc.AsMap()
+	src := doc.AsPlainMap()
 	dst := make(map[string]interface{}, len(src))
 	for k,v := range src {
 		dst[k] = v
