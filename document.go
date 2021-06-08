@@ -1,6 +1,6 @@
 package abstract_document
 
-type ConstructorFunc func (map[string]interface{}) Document
+type ConstructorFunc func(map[string]interface{}) Document
 
 type Array []interface{}
 
@@ -8,10 +8,10 @@ type Array []interface{}
 type Document interface {
 	Get(key string) interface{}
 	Put(key string, value interface{})
-	Children(key string, constructor ConstructorFunc) []Document
 	Remove(key string) (bool, error)
 
 	Array(key string) Array
+	Children(key string, constructor ConstructorFunc) []Document
 	Document(key string) Document
 
 	AsPlainMap() map[string]interface{}
@@ -21,8 +21,14 @@ type Document interface {
 	Integer(key string) (int64, error)
 	Number(key string) (float64, error)
 
-	IsNull(key string) (bool, error)
+	IsNull(key string) bool
 	IsExist(key string) bool
+	IsArray(key string) bool
+	IsDocument(key string) bool
+	IsBoolean(key string) bool
+	IsString(key string) bool
+	IsInteger(key string) bool
+	IsNumber(key string) bool
 
 	Size() int
 	Keys() []string

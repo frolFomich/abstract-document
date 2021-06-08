@@ -12,14 +12,14 @@ type AbstractDocument struct {
 
 var (
 	ErrorKeyDoesNotExist = errors.New("key doesn't exists")
-	ErrorInvalidKey = errors.New("invalid key provided")
-	ErrorDataConversion = errors.New("invalid data conversion")
+	ErrorInvalidKey      = errors.New("invalid key provided")
+	ErrorDataConversion  = errors.New("invalid data conversion")
 
 	ErrorUnsupportedGoType = errors.New("unsupported go data type")
 )
 
 func (a *AbstractDocument) Get(key string) interface{} {
-	if a.data == nil || key == "" {
+	if a.IsNull(key) {
 		return nil
 	}
 	return a.data[key]
@@ -29,21 +29,22 @@ func (a *AbstractDocument) Put(key string, value interface{}) {
 	if key == "" {
 		return
 	}
-
 	a.data[key] = asGoType(value)
 }
 
 func (a *AbstractDocument) Children(key string, constructor ConstructorFunc) []Document {
-	empty := make([]Document, 0)
-	if key == "" || constructor == nil {
-		return empty
+	if a.IsNull(key) {
+		return nil
+	}
+	if constructor == nil {
+		panic(errors.New("error: required constructor is absent"))
 	}
 	list := a.Array(key)
 	result := make([]Document, len(list))
 	for i, val := range list {
 		m, ok := val.(map[string]interface{})
 		if !ok {
-			return empty
+			return nil
 		}
 		result[i] = constructor(m)
 	}
@@ -51,89 +52,57 @@ func (a *AbstractDocument) Children(key string, constructor ConstructorFunc) []D
 }
 
 func (a *AbstractDocument) Array(key string) Array {
-	empty := make([]interface{}, 0)
-	if key == "" {
-		return empty
+	if a.IsNull(key) || !a.IsArray(key) {
+		return nil
 	}
-	list,ok := a.Get(key).([]interface{})
-	if !ok {
-		return empty
-	}
-	return list
+	return a.Get(key).([]interface{})
 }
 
 func (a *AbstractDocument) Document(key string) Document {
-	empty := &AbstractDocument{}
-	if key == "" {
-		return empty
+	if key == "" || !a.IsDocument(key) {
+		return nil
 	}
-	i := a.Get(key)
-	if i == nil {
-		return empty
-	}
-	if b, ok := i.(map[string]interface{}); ok {
-		return Of(b)
-	}
-	return empty
+	return Of(a.Get(key).(map[string]interface{}))
 }
 
 func (a *AbstractDocument) Boolean(key string) (bool, error) {
-	if key == "" {
+	if a.IsNull(key) {
 		return false, ErrorInvalidKey
 	}
-	i := a.Get(key)
-	if i == nil {
-		return false, ErrorKeyDoesNotExist
+	if !a.IsBoolean(key) {
+		return false, ErrorDataConversion
 	}
-	if b, ok := i.(bool); ok {
-		return b, nil
-	}
-	return false, ErrorDataConversion
+	return a.Get(key).(bool), nil
 }
 
 func (a *AbstractDocument) String(key string) (string, error) {
-	if key == "" {
+	if a.IsNull(key) {
 		return "", ErrorInvalidKey
 	}
-	i := a.Get(key)
-	if i == nil {
-		return "", ErrorKeyDoesNotExist
+	if !a.IsString(key) {
+		return "", ErrorDataConversion
 	}
-	if b, ok := i.(string); ok {
-		return b, nil
-	}
-	return "", ErrorDataConversion
+	return a.Get(key).(string), nil
 }
 
 func (a *AbstractDocument) Integer(key string) (int64, error) {
-	if key == "" {
+	if a.IsNull(key) {
 		return 0, ErrorInvalidKey
 	}
-	i := a.Get(key)
-	if i == nil {
-		return 0, ErrorKeyDoesNotExist
+	if !a.IsInteger(key) {
+		return 0, ErrorDataConversion
 	}
-	if b, ok := i.(float64); ok {
-		if _, r := math.Modf(b); r != 0 {
-			return 0, ErrorDataConversion
-		}
-		return int64(b), nil
-	}
-	return 0, ErrorDataConversion
+	return int64(a.Get(key).(float64)), nil
 }
 
 func (a *AbstractDocument) Number(key string) (float64, error) {
-	if key == "" {
+	if a.IsNull(key) {
 		return 0, ErrorInvalidKey
 	}
-	i := a.Get(key)
-	if i == nil {
-		return 0, ErrorKeyDoesNotExist
+	if !a.IsNumber(key) {
+		return 0, ErrorDataConversion
 	}
-	if b, ok := i.(float64); ok {
-		return b, nil
-	}
-	return 0, ErrorDataConversion
+	return a.Get(key).(float64), nil
 }
 
 func (a *AbstractDocument) MarshalJson() ([]byte, error) {
@@ -149,32 +118,25 @@ func (a *AbstractDocument) AsPlainMap() map[string]interface{} {
 }
 
 func (a *AbstractDocument) Remove(key string) (bool, error) {
-	if key == "" {
-		return false, ErrorInvalidKey
-	}
-	if _, ok := a.data[key]; ok {
-		delete(a.data, key)
-		return true,nil
-	}
-	return false, ErrorKeyDoesNotExist
-}
-
-func (a *AbstractDocument) IsNull(key string) (bool, error) {
-	if key == "" {
-		return false, ErrorInvalidKey
-	}
-	if v,ok := a.data[key]; ok {
-		return v == nil, nil
-	} else {
+	if !a.IsExist(key) {
 		return false, ErrorKeyDoesNotExist
 	}
+	delete(a.data, key)
+	return true, nil
+}
+
+func (a *AbstractDocument) IsNull(key string) bool {
+	if !a.IsExist(key) {
+		return true
+	}
+	return a.data[key] == nil
 }
 
 func (a *AbstractDocument) IsExist(key string) bool {
-	if key == "" {
+	if key == "" || a.Size() <= 0 {
 		return false
 	}
-	_,ok := a.data[key]
+	_, ok := a.data[key]
 	return ok
 }
 
@@ -192,6 +154,58 @@ func (a *AbstractDocument) Keys() []string {
 	return res
 }
 
+func (a *AbstractDocument) IsArray(key string) bool {
+	if a.IsNull(key) {
+		return false
+	}
+	_, isArray := a.Get(key).([]interface{})
+	return isArray
+}
+
+func (a *AbstractDocument) IsDocument(key string) bool {
+	if a.IsNull(key) {
+		return false
+	}
+	_, isDoc := a.Get(key).(map[string]interface{})
+	return isDoc
+}
+
+func (a *AbstractDocument) IsBoolean(key string) bool {
+	if a.IsNull(key) {
+		return false
+	}
+	_, isBool := a.Get(key).(bool)
+	return isBool
+}
+
+func (a *AbstractDocument) IsString(key string) bool {
+	if a.IsNull(key) {
+		return false
+	}
+	_, isStr := a.Get(key).(string)
+	return isStr
+}
+
+func (a *AbstractDocument) IsInteger(key string) bool {
+	if !a.IsNumber(key) {
+		return false
+	}
+	num, err := a.Number(key)
+	if err != nil {
+		return false
+	}
+	_, r := math.Modf(num)
+	return r == 0
+}
+
+func (a *AbstractDocument) IsNumber(key string) bool {
+	if a.IsNull(key) {
+		return false
+	}
+	_, isNum := a.Get(key).(float64)
+	return isNum
+}
+
 func asGoType(value interface{}) interface{} {
 	if value == nil {
 		return nil
@@ -199,13 +213,13 @@ func asGoType(value interface{}) interface{} {
 		return d.AsPlainMap()
 	} else if a, ta := value.(Array); ta {
 		is := make([]interface{}, len(a))
-		for i,v := range a {
+		for i, v := range a {
 			is[i] = asGoType(v)
 		}
 		return is
 	} else if s, ts := value.([]Document); ts {
 		is := make([]interface{}, len(s))
-		for i,v := range s {
+		for i, v := range s {
 			is[i] = asGoType(v)
 		}
 		return is
@@ -243,5 +257,3 @@ func asGoType(value interface{}) interface{} {
 
 	return value
 }
-
-

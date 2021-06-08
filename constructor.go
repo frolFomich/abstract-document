@@ -25,7 +25,7 @@ func FromOther(doc Document) Document {
 	}
 	src := doc.AsPlainMap()
 	dst := make(map[string]interface{}, len(src))
-	for k,v := range src {
+	for k, v := range src {
 		dst[k] = v
 	}
 	return Of(dst)
@@ -43,9 +43,8 @@ func UnmarshalJson(bytes []byte) (Document, error) {
 	return Of(m), nil
 }
 
-func New() Document {
+func New() *AbstractDocument {
 	return &AbstractDocument{
 		data: make(map[string]interface{}, 0),
 	}
 }
-

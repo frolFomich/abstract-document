@@ -7,7 +7,7 @@ import (
 type OperationType int
 
 const (
-	UnknownOperation OperationType = iota
+	UnknownOperation OperationType = iota + 1
 	AddOperation
 	ReplaceOperation
 	RemoveOperation
@@ -20,13 +20,12 @@ type DocumentPatch interface {
 	Value() interface{}
 }
 
-
 func (op OperationType) String() string {
-	 ops := [...]string{AddOperationString, ReplaceOperationString, RemoveOperationString}
-	 if len(ops) < int(op) {
-	 	return ""
-	 }
-	 return ops[op]
+	ops := [...]string{UnknownOperationString, AddOperationString, ReplaceOperationString, RemoveOperationString}
+	if len(ops) < int(op) {
+		return UnknownOperationString
+	}
+	return ops[op-1]
 }
 
 func ValueOf(opStr string) OperationType {
@@ -34,13 +33,10 @@ func ValueOf(opStr string) OperationType {
 	switch opStr {
 	case AddOperationString:
 		operationType = AddOperation
-		break
 	case ReplaceOperationString:
 		operationType = ReplaceOperation
-		break
 	case RemoveOperationString:
 		operationType = RemoveOperation
-		break
 	default:
 		break
 	}

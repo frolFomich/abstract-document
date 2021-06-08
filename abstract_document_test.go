@@ -19,10 +19,10 @@ func TestAbstractDocument_Boolean(t *testing.T) {
 		want    bool
 		wantErr bool
 	}{
-		{name: "Boolean return correct value", fields: fields{ data: map[string]interface{} {"A": true}}, args: args{key: "A"}, want: true, wantErr: false},
-		{name: "Boolean return conversion error", fields: fields{ data: map[string]interface{} {"A": 100}}, args: args{key: "A"}, want: false, wantErr: true},
-		{name: "Boolean return key not exist error", fields: fields{ data: map[string]interface{} {"B": true}}, args: args{key: "A"}, want: false, wantErr: true},
-		{name: "Boolean return invalid key error", fields: fields{ data: map[string]interface{} {"A": true}}, args: args{key: ""}, want: false, wantErr: true},
+		{name: "Boolean return correct value", fields: fields{data: map[string]interface{}{"A": true}}, args: args{key: "A"}, want: true, wantErr: false},
+		{name: "Boolean return conversion error", fields: fields{data: map[string]interface{}{"A": 100}}, args: args{key: "A"}, want: false, wantErr: true},
+		{name: "Boolean return key not exist error", fields: fields{data: map[string]interface{}{"B": true}}, args: args{key: "A"}, want: false, wantErr: true},
+		{name: "Boolean return invalid key error", fields: fields{data: map[string]interface{}{"A": true}}, args: args{key: ""}, want: false, wantErr: true},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -55,10 +55,10 @@ func TestAbstractDocument_String(t *testing.T) {
 		want    string
 		wantErr bool
 	}{
-		{name: "String return correct value", fields: fields{ data: map[string]interface{} {"A": "B"}}, args: args{key: "A"}, want: "B", wantErr: false},
-		{name: "String return conversion error", fields: fields{ data: map[string]interface{} {"A": 123}}, args: args{key: "A"}, want: "", wantErr: true},
-		{name: "String return key not exist error", fields: fields{ data: map[string]interface{} {"B": 1}}, args: args{key: "A"}, want: "", wantErr: true},
-		{name: "String return invalid key error", fields: fields{ data: map[string]interface{} {"A": 1}}, args: args{key: ""}, want: "", wantErr: true},
+		{name: "String return correct value", fields: fields{data: map[string]interface{}{"A": "B"}}, args: args{key: "A"}, want: "B", wantErr: false},
+		{name: "String return conversion error", fields: fields{data: map[string]interface{}{"A": 123}}, args: args{key: "A"}, want: "", wantErr: true},
+		{name: "String return key not exist error", fields: fields{data: map[string]interface{}{"B": 1}}, args: args{key: "A"}, want: "", wantErr: true},
+		{name: "String return invalid key error", fields: fields{data: map[string]interface{}{"A": 1}}, args: args{key: ""}, want: "", wantErr: true},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -100,15 +100,15 @@ func TestAbstractDocument_Children(t *testing.T) {
 	}
 
 	tests := []struct {
-		name   string
-		fields fields
-		args   args
-		want   []Document
+		name    string
+		fields  fields
+		args    args
+		want    []Document
 		wantErr bool
 	}{
 		{name: "Children return correct value", fields: fields{data: givenMap}, args: args{key: "Docs", constructor: func(m map[string]interface{}) Document {
 			return Of(m)
-		}}, want: []Document{d1,d2,d3}, wantErr: false},
+		}}, want: []Document{d1, d2, d3}, wantErr: false},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -136,11 +136,11 @@ func TestAbstractDocument_Number(t *testing.T) {
 		want    float64
 		wantErr bool
 	}{
-		{name: "Number return correct value for float", fields: fields{ data: map[string]interface{} {"A": 10.25}}, args: args{key: "A"}, want: 10.25, wantErr: false},
-		{name: "Number return correct value for int", fields: fields{ data: map[string]interface{} {"A": float64(10)}}, args: args{key: "A"}, want: 10, wantErr: false},
-		{name: "Number return conversion error", fields: fields{ data: map[string]interface{} {"A": 123}}, args: args{key: "A"}, want: 0, wantErr: true},
-		{name: "Number return key not exist error", fields: fields{ data: map[string]interface{} {"B": 1}}, args: args{key: "A"}, want: 0, wantErr: true},
-		{name: "Number return invalid key error", fields: fields{ data: map[string]interface{} {"A": 1}}, args: args{key: ""}, want: 0, wantErr: true},
+		{name: "Number return correct value for float", fields: fields{data: map[string]interface{}{"A": 10.25}}, args: args{key: "A"}, want: 10.25, wantErr: false},
+		{name: "Number return correct value for int", fields: fields{data: map[string]interface{}{"A": float64(10)}}, args: args{key: "A"}, want: 10, wantErr: false},
+		{name: "Number return conversion error", fields: fields{data: map[string]interface{}{"A": 123}}, args: args{key: "A"}, want: 0, wantErr: true},
+		{name: "Number return key not exist error", fields: fields{data: map[string]interface{}{"B": 1}}, args: args{key: "A"}, want: 0, wantErr: true},
+		{name: "Number return invalid key error", fields: fields{data: map[string]interface{}{"A": 1}}, args: args{key: ""}, want: 0, wantErr: true},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -173,10 +173,10 @@ func TestAbstractDocument_Integer(t *testing.T) {
 		want    int64
 		wantErr bool
 	}{
-		{name: "Number return correct value for float", fields: fields{ data: map[string]interface{} {"A": float64(10)}}, args: args{key: "A"}, want: 10, wantErr: false},
-		{name: "Number return conversion error", fields: fields{ data: map[string]interface{} {"A": 123.25}}, args: args{key: "A"}, want: 0, wantErr: true},
-		{name: "Number return key not exist error", fields: fields{ data: map[string]interface{} {"B": 1}}, args: args{key: "A"}, want: 0, wantErr: true},
-		{name: "Number return invalid key error", fields: fields{ data: map[string]interface{} {"A": 1}}, args: args{key: ""}, want: 0, wantErr: true},
+		{name: "Number return correct value for float", fields: fields{data: map[string]interface{}{"A": float64(10)}}, args: args{key: "A"}, want: 10, wantErr: false},
+		{name: "Number return conversion error", fields: fields{data: map[string]interface{}{"A": 123.25}}, args: args{key: "A"}, want: 0, wantErr: true},
+		{name: "Number return key not exist error", fields: fields{data: map[string]interface{}{"B": 1}}, args: args{key: "A"}, want: 0, wantErr: true},
+		{name: "Number return invalid key error", fields: fields{data: map[string]interface{}{"A": 1}}, args: args{key: ""}, want: 0, wantErr: true},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -203,7 +203,7 @@ func TestAbstractDocument_Document(t *testing.T) {
 		key string
 	}
 
-	nestedDoc := map[string]interface{}{"A": "B", "C" : 100, "D": true}
+	nestedDoc := map[string]interface{}{"A": "B", "C": 100, "D": true}
 	m := map[string]interface{}{"Doc": nestedDoc, "Q": "qqq"}
 
 	tests := []struct {
@@ -226,7 +226,6 @@ func TestAbstractDocument_Document(t *testing.T) {
 	}
 }
 
-
 func TestAbstractDocument_IsNull(t *testing.T) {
 	type fields struct {
 		data map[string]interface{}
@@ -248,11 +247,7 @@ func TestAbstractDocument_IsNull(t *testing.T) {
 			a := &AbstractDocument{
 				data: tt.fields.data,
 			}
-			got, err := a.IsNull(tt.args.key)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("IsNull() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
+			got := a.IsNull(tt.args.key)
 			if got != tt.want {
 				t.Errorf("IsNull() got = %v, want %v", got, tt.want)
 			}
@@ -307,8 +302,8 @@ func TestAbstractDocument_IsExist(t *testing.T) {
 		want    bool
 		wantErr bool
 	}{
-		{name: "IsExist returns true for existing key", fields: fields{data: map[string]interface{}{"A": "B", "C": 100}}, args: args{key:"A"}, want: true, wantErr: false},
-		{name: "IsExist returns false for non-existing key", fields: fields{data: map[string]interface{}{"C": 100}}, args: args{key:"A"}, want: false, wantErr: false},
+		{name: "IsExist returns true for existing key", fields: fields{data: map[string]interface{}{"A": "B", "C": 100}}, args: args{key: "A"}, want: true, wantErr: false},
+		{name: "IsExist returns false for non-existing key", fields: fields{data: map[string]interface{}{"C": 100}}, args: args{key: "A"}, want: false, wantErr: false},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -344,8 +339,8 @@ func TestAbstractDocument_Put(t *testing.T) {
 			a := &AbstractDocument{
 				data: map[string]interface{}{},
 			}
-			for k,v := range tt.fields.data {
-				a.Put(k,v)
+			for k, v := range tt.fields.data {
+				a.Put(k, v)
 			}
 			if got := a.AsPlainMap(); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("Put() = %v, want %v", got, tt.want)
@@ -353,7 +348,6 @@ func TestAbstractDocument_Put(t *testing.T) {
 		})
 	}
 }
-
 
 func TestAbstractDocument_Array(t *testing.T) {
 	type fields struct {
@@ -363,7 +357,7 @@ func TestAbstractDocument_Array(t *testing.T) {
 		key string
 	}
 
-	givenArray := []interface{}{1,2,3,4,5}
+	givenArray := []interface{}{1, 2, 3, 4, 5}
 
 	tests := []struct {
 		name   string
@@ -393,13 +387,13 @@ func TestAbstractDocument_Remove(t *testing.T) {
 		key string
 	}
 
-	givenMap := map[string]interface{}{"A":"B", "C":"D"}
+	givenMap := map[string]interface{}{"A": "B", "C": "D"}
 
 	tests := []struct {
-		name   string
-		fields fields
-		args   args
-		want   bool
+		name    string
+		fields  fields
+		args    args
+		want    bool
 		wantErr bool
 	}{
 		{name: "Remove returns correct value", fields: fields{data: givenMap}, args: args{key: "A"}, want: true, wantErr: false},
@@ -425,14 +419,14 @@ func TestAbstractDocument_Size(t *testing.T) {
 	type fields struct {
 		data map[string]interface{}
 	}
-	givenMap := map[string]interface{}{"A":"B", "C":false, "E" : 3}
+	givenMap := map[string]interface{}{"A": "B", "C": false, "E": 3}
 
 	tests := []struct {
 		name   string
 		fields fields
 		want   int
 	}{
-		{name: "Size returns correct value", fields: fields{data: givenMap},  want: 3},
+		{name: "Size returns correct value", fields: fields{data: givenMap}, want: 3},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -452,14 +446,14 @@ func TestAbstractDocument_Keys(t *testing.T) {
 	}
 	givenKeys := []string{"A", "B", "C"}
 	givenMap := make(map[string]interface{}, len(givenKeys))
-	for i,k := range givenKeys {
-		givenMap[k] = i+1
+	for i, k := range givenKeys {
+		givenMap[k] = i + 1
 	}
 
 	tests := []struct {
-		name   string
-		fields fields
-		want   []string
+		name    string
+		fields  fields
+		want    []string
 		wantErr bool
 	}{
 		{name: "Remove returns correct value", fields: fields{data: givenMap}, want: givenKeys, wantErr: false},

@@ -1,20 +1,18 @@
 package patch
 
 import (
-	"errors"
 	doc "github.com/frolFomich/abstract-document"
 )
 
-func New(op, path string, val interface{}) DocumentPatch {
-	if "" == op || "" == path {
-		panic(errors.New("illegal arguments"))
-	}
+func New(op OperationType, path string, val interface{}) DocumentPatch {
 	dp := &documentPatchImpl{
-		Document: doc.New(),
+		doc.New(),
 	}
-	dp.Put(OperationTypeKey, op)
+	dp.Put(OperationTypeKey, op.String())
 	dp.Put(PathKey, path)
-	dp.Put(ValueKey, val)
+	if RemoveOperation != op {
+		dp.Put(ValueKey, val)
+	}
 
 	return dp
 }

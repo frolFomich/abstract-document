@@ -1,13 +1,12 @@
 package patch
 
 const (
-
-	OperationTypeKey = "op"
-
+	OperationTypeKey       = "op"
+	UnknownOperationString = "UNKNOWN"
 	AddOperationString     = "ADD"
 	ReplaceOperationString = "REPLACE"
 	RemoveOperationString  = "REMOVE"
 
-	PathKey = "path"
+	PathKey  = "path"
 	ValueKey = "value"
 )

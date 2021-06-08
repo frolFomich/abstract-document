@@ -5,7 +5,7 @@ import (
 )
 
 type documentPatchImpl struct {
-	doc.Document
+	*doc.AbstractDocument
 }
 
 func (d *documentPatchImpl) Operation() OperationType {
@@ -27,6 +27,3 @@ func (d *documentPatchImpl) Path() string {
 func (d *documentPatchImpl) Value() interface{} {
 	return d.Get(ValueKey)
 }
-
-
-
