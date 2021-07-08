@@ -9,7 +9,7 @@ var (
 	ErrorInvalidJsonBytes = errors.New("invalid input json or empty")
 )
 
-func Of(data map[string]interface{}) Document {
+func Of(data map[string]interface{}) *AbstractDocument {
 	if data == nil {
 		return New()
 	} else {
@@ -19,7 +19,7 @@ func Of(data map[string]interface{}) Document {
 	}
 }
 
-func FromOther(doc Document) Document {
+func FromOther(doc Document) *AbstractDocument {
 	if doc == nil {
 		return New()
 	}
@@ -43,7 +43,7 @@ func UnmarshalJson(bytes []byte) (Document, error) {
 	return &AbstractDocument{m}, nil
 }
 
-func New() Document {
+func New() *AbstractDocument {
 	return &AbstractDocument{
 		data: make(map[string]interface{}, 0),
 	}
