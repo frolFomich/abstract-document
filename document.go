@@ -11,7 +11,7 @@ type Document interface {
 	Remove(key string) (bool, error)
 
 	Array(key string) Array
-	Children(key string, constructor ConstructorFunc) []Document
+	Children(key string) []Document
 	Document(key string) Document
 
 	AsPlainMap() map[string]interface{}

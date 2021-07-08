@@ -82,8 +82,7 @@ func TestAbstractDocument_Children(t *testing.T) {
 		data map[string]interface{}
 	}
 	type args struct {
-		key         string
-		constructor ConstructorFunc
+		key string
 	}
 	d1 := Of(map[string]interface{}{"A": 1})
 	d2 := Of(map[string]interface{}{"B": 2})
@@ -106,16 +105,16 @@ func TestAbstractDocument_Children(t *testing.T) {
 		want    []Document
 		wantErr bool
 	}{
-		{name: "Children return correct value", fields: fields{data: givenMap}, args: args{key: "Docs", constructor: func(m map[string]interface{}) Document {
-			return Of(m)
-		}}, want: []Document{d1, d2, d3}, wantErr: false},
+		{name: "Children return correct value", fields: fields{data: givenMap}, args: args{key: "Docs"},
+			want:    []Document{d1, d2, d3},
+			wantErr: false},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			a := &AbstractDocument{
 				data: tt.fields.data,
 			}
-			if got := a.Children(tt.args.key, tt.args.constructor); !reflect.DeepEqual(got, tt.want) {
+			if got := a.Children(tt.args.key); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("Children() = %v, want %v", got, tt.want)
 			}
 		})

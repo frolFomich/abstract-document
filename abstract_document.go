@@ -32,12 +32,9 @@ func (a *AbstractDocument) Put(key string, value interface{}) {
 	a.data[key] = asGoType(value)
 }
 
-func (a *AbstractDocument) Children(key string, constructor ConstructorFunc) []Document {
+func (a *AbstractDocument) Children(key string) []Document {
 	if a.IsNull(key) {
 		return nil
-	}
-	if constructor == nil {
-		panic(errors.New("error: required constructor is absent"))
 	}
 	list := a.Array(key)
 	result := make([]Document, len(list))
@@ -46,7 +43,7 @@ func (a *AbstractDocument) Children(key string, constructor ConstructorFunc) []D
 		if !ok {
 			return nil
 		}
-		result[i] = constructor(m)
+		result[i] = Of(m)
 	}
 	return result
 }
